@@ -19,7 +19,7 @@ sudo apt-get update
 #用于安装依赖
 sudo apt-get install aptitude
 
-#libssl1.0.1-dev 找不到 解决:可以找高版本的 一些依赖的api需要手动替换
+#libssl1.0.1-dev 找不到 解决:可以找高版本的 一些依赖的api需要手动替换 api替换在参考中
 #libglib2.3.4-dev 找不到 解决:使用libglib3.0-cil-dev
 sudo aptitude install libmicrohttpd-dev libjansson-dev libnice-dev \
     libssl1.0.1-dev libsrtp-dev libsofia-sip-ua-dev libglib2.3.4-dev \
@@ -357,5 +357,7 @@ https://ip(服务器ip地址)/videoroomtest.html
 
 https://zhuanlan.zhihu.com/p/205056453
 stunserver: https://www.jianshu.com/p/81e92402bb7f
+
+openssl新老api替换:https://blog.csdn.net/Fengfgg/article/details/115524490
 
 Janus 官网：https://janus.conf.meetecho.com/index.html 参考文档：https://github.com/meetecho/janus-gateway
