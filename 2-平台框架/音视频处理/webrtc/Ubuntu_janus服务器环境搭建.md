@@ -337,17 +337,19 @@ certificates: {
 
 ##### 4、运行服务器:
 
-1、启动stunserver
-stunserver
-2、启动turnserver
-sudo nohup turnserver -L 0.0.0.0 --min-port 30000 --max-port 60000  -a -u ms:123456 -v -f -r nort.gov &
-3、启动janus
-/opt/janus/bin/janus --debug-level=5 --log-file=$HOME/janus-log
 4、启动nginx
 sudo /usr/local/nginx/sbin/nginx
+2、启动turnserver
+sudo nohup turnserver -L 0.0.0.0 --min-port 30000 --max-port 60000  -a -u ms:123456 -v -f -r nort.gov &
+1、启动stunserver
+stunserver
+3、启动janus
+/opt/janus/bin/janus --debug-level=5 --log-file=$HOME/janus-log
+
 
 运行网页:
 https://ip(服务器ip地址)/videoroomtest.html
+https://192.168.45.128/videoroomtest.html
 
 进入首页后，找到 videoRoom，Start
 

@@ -13,6 +13,27 @@ def定义的变量可以自动识别类型
 支持解构
 循环支持upto/times/step
 
+
+
+1.2 范围  用于for/switch等操作
+
+```
+1..10 - 包含范围的示例
+1 .. <10 - 独占范围的示例
+'a'..'x' - 范围也可以由字符组成
+10..1 - 范围也可以按降序排列
+'x'..'a' - 范围也可以由字符组成并按降序排列。
+```
+
+1.3 数据结构
+
+```goovy
+def list1 = [1, 2] //类似java ArrayList
+def map = ["k1":"v1", "k2":"v2"] //类似java HashMap
+```
+
+
+
 ###### 2、闭包
 2.1 闭包写法
 ```groovy
@@ -34,7 +55,6 @@ def test(str, closure) {
 }
 //闭包为最后一个参数时 可以使用这种写法
 test("==>test 111",{println(it)});
-
 test("==>test 222"){str -> println(str)}
 ```
 
@@ -61,6 +81,7 @@ tell {
 2.3 闭包委托
 this/owner/delegate关系
 https://www.jianshu.com/p/ae10f75b37cf
+
 1. this 指的是闭包定义所在的类
 2. owner 指的是闭包定义所在的对象，这个对象可能是类也可能是另一个闭包。【这是因为闭包是可以嵌套定义的。】
 3. delegate 指的是一个第三方的（委托）对象，当在闭包中调用的方法或属性没有定义时，就会去委托对象上寻找。
@@ -102,7 +123,80 @@ A ==> f2
 new Ex().foo中闭包的this为全局上下文  会优先查找全局的f1/f2方法
 在Ex的foo方法中 `closue.delegate = new A()` 委托给对象A 因为没找到全局f2方法 所有调用A.f1()方法
 
-2.4 尾递归
+2.4 delegate
+
+用于处理闭包属性/方法调用的第三方对象，可以修改
+
+四种代理模式:
+
+OWNER_FIRST : 所有者中的方法优先 ;
+
+DELEGATE_FIRST : 代理优先策略 , 代理中的方法优先 ;
+
+OWNER_ONLY : 只执行所有者中的方法 ;
+
+DELEGATE_ONLY : 只执行代理中的方法 ;
+
+TO_SELF : 只在自身查找 ;
+
+
+
+用法：
+
+```groov
+class MyDelegate {
+    def func = {
+        println('hello')
+    }
+}
+def c = {
+    func()
+}
+//闭包使用对象的方法
+c.delegate = new MyDelegate()
+c.call()
+```
+
+使用java实现类似效果:
+
+```java
+//反射实现
+static boolean callMethod(Object o, String method, Object... args) {
+    try {
+        Method func = o.getClass().getDeclaredMethod(method);
+        if (func != null) {
+            func.invoke(o, args);
+            return true;
+        }
+    } catch (Exception ignored) {
+    }
+    return false;
+}
+class MyDelegate {
+    void func() {
+        System.out.println("func");
+    }
+}
+abstract class MyClosure {
+    Object delegate;
+    abstract void call();
+}
+MyClosure c = new MyClosure() {
+    @Override
+    void call() {
+        if (!callMethod(this, "func")) {
+            callMethod(delegate, "func");
+        }
+    }
+};
+//使用反射实现对象的调用
+c.delegate = new MyDelegate();
+c.call();
+```
+
+
+
+2.5 尾递归
 groovy的尾递归优化为了循环
 
 #### 二、java与groovy互调

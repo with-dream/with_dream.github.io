@@ -60,7 +60,75 @@ List<A> list = new ArrayList<B>();
 List<A> list[] = new ArrayList<B>[];
 ```
 
+5. 继承
+
+   ```java
+   //全部继承
+   class Child<T1,T2,T2> extends Father<T1,T2>{} 
+   
+   //部分继承
+   calss Child<T1,A,B> extends Father<T1,String>{}
+   
+   //实现父类泛型 此时子类的泛型与父类无关
+   class Child<A,B> extends Father<Integer,String>{}
+   
+   //忽略父类泛型 此时泛型默认为Object
+   class Child extends Father{}
+   ```
+
+6.获取泛型类型
+
+限制: 
+
+1、反射无法操作局部变量 所以无法获取局部变量的类型
+
+2、必须具有真实类型的存在
+
+3、泛型的类型是明确的如(List<User>是明确的，List<T>是不明确的)
+
+```java
+		Map<String, Integer> map = new HashMap<>();	
+
+		public static class D<T> {
+    }
+    
+    public static class Demo<T> extends D<T> {
+    }
+
+    public static class SubDemo extends Demo<TTT> {
+    }
+
+    public static void main(String[] args) {
+        //获取类的泛型类型
+        SubDemo subDemo = new SubDemo();
+        Type[] type = ((ParameterizedType) subDemo.getClass()
+                .getGenericSuperclass()).getActualTypeArguments();
+        for (Type t : type)
+            System.out.println("subdemo==>" + t.getTypeName());
+
+        //获取局部变量的泛型类型
+      	//需要注意new对象时需要加大括号 用于创建子类 调用getGenericSuperclass才能获取当前类
+        Demo<TTT> demo = new Demo<>(){};
+        Type[] typeDemo = ((ParameterizedType) demo.getClass()
+                .getGenericSuperclass()).getActualTypeArguments();
+        for (Type t : typeDemo)
+            System.out.println("demo==>" + t.getTypeName());
+      
+      	//获取属性泛型类型
+      	Type t = Test.class.getDeclaredField("map").getGenericType(); //Filed的方法
+        if (ParameterizedType.class.isAssignableFrom(t.getClass())) {
+            for (Type t1 : ((ParameterizedType) t).getActualTypeArguments()) {
+                System.out.print(t1 + ",");
+            }
+            System.out.println();
+        }
+    }
+```
+
+
+
 ### 三、反射
+
 https://www.jianshu.com/p/516228c2acfd
 ###### 1、反射原理
 **1.1 获取属性、方法**
@@ -171,7 +239,7 @@ https://www.jianshu.com/p/d82fe75ee01d
 编译时多态 重载
 屏蔽不同子类的差异 写出通用的代码 做到可维护 可扩展 可重用
 
-##### 、小补充
+##### 5、小补充
 ###### 1、hashCode与equals
 基本类型的hashCode是其本身
 需要保证同一个对象多次调用 返回的是同一个值
@@ -235,3 +303,23 @@ https://blog.csdn.net/fenglllle/article/details/81389286
 
 
 目的:保证类的安全性和唯一性
+
+
+
+##### 6、奇淫巧技
+
+6.1、new对象时加{} 
+
+自动创建匿名子类 并返回该子类的对象
+
+可以对变量赋值操作、重写方法
+
+```java
+class A{}
+//类似实现匿名接口
+A a = new A() {}
+```
+
+
+
+参考: https://blog.csdn.net/wangzizhou7610/article/details/107845242?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-107845242-blog-65436773.pc_relevant_multi_platform_whitelistv4&spm=1001.2101.3001.4242.1&utm_relevant_index=3

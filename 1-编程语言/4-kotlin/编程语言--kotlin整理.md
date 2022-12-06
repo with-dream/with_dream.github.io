@@ -24,7 +24,8 @@ print(adHoc.x + adHoc.y)
 ```
 
 ###### 1.2、对象声明
-object之后指定了一个名称, 那么它就不再是“对象表达式”，而是一个对“对象声明”,是类的变种
+object之后指定了一个名称, 那么它就不再是“对象表达式”，而是一个对“对象声明”,是类的变种 且是单例
+
 ```kotlin
 object MyInfo: Info("submit"),IClickListener {
     override fun doClick() {
@@ -59,6 +60,29 @@ fun main(args: Array<String>) {
 ###### 1.4、对象表达式与对象声明
 对象表达式在使用的地方被立即执行
 对象声明是延迟加载的， 在第一次使用的时候被初始化
+
+
+
+###### 1.5、class
+
+```kotlin
+class A [constructor] (_id:Int, _name:String) {//主构造函数
+  init {
+    //主构造函数
+  }
+  
+  constructor(_age:Int) {	//次构造函数
+    
+  }
+}
+
+主构造函数声明属性
+类级别的属性赋值
+初始化块里属性赋值
+次构造函数里属性赋值
+```
+
+
 
 ##### 二、扩展
 ###### 2.1、扩展函数
@@ -281,7 +305,7 @@ https://blog.csdn.net/IO_Field/article/details/53446740
 
 ##### 六、高阶
 ###### 1、kotlin lambda表达式原理及优化
-通过创建FunctionN类 并将lambda表达式重写于invoke中实现 可用inline优化
+编译时 通过创建FunctionN类 并将lambda表达式重写于invoke中实现 可用inline优化
 https://blog.csdn.net/u013064109/article/details/80139556
 
 ###### 2、kotlin支持注解 且与java兼容
@@ -352,6 +376,10 @@ https://blog.csdn.net/IO_Field/article/details/53207125
 
 7、解构 `var (name, age) = person`
 
+> 只有data class声明的类支持结构 普通类不支持
+>
+> 对于不需要的变量 可以使用"_"替代或者直接忽略
+
 8、使用 :: 操作符来实现函数的引用 this::可以简化为::
 
 9、inline  将频繁调用且代码量不大的代码块在编译时替换 用空间换时间
@@ -366,8 +394,45 @@ https://blog.csdn.net/IO_Field/article/details/53207125
 
 @JvmStatic 定义静态方法  @Throw 捕获kotlin异常
 
+13、中缀调用 (鸡肋)
+
+> infix修饰的方法
+>
+> 限制: 参数只能有一个
+>
+> ```kot
+> //声明 使用infix修饰
+> infix fun <T> T.into(other: Collection<T>): Boolean = other.contains(this)
+> //使用
+> boolean res = "a" into "b"
+> ```
+
+14、顶层函数
+
+类中的static方法使用方便 但是过多会导致类膨胀
+
+kotlin可以直接在文件中定义方法 使用时直接导入方法即可 解决类膨胀的问题 其实编译后会自动添加一个类
+
+15、range (CharRange、LongRange、IntRange)
+
+```kotlin
+val aRange: IntRange = 1..1024 // 闭区间 [0,1024]
+val bRange: IntRange = 1 until 1024 // 半闭区间 [1,1024)
+//判断是否包含
+val isContains: Boolean = bRange.contains(1024) // false
+val isIn: Boolean = 1024 in bRange // false
+//迭代
+for (i in aRange step 10) {
+    print("$i, ")
+}
+```
+
+
+
+
 
 ##### 参考
+
 https://blog.csdn.net/io_field/article/category/6461077
 
 
@@ -379,8 +444,6 @@ https://blog.csdn.net/io_field/article/category/6461077
 object
 
 by
-
-infix
 
 
 
